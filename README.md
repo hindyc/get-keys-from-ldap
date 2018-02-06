@@ -6,11 +6,12 @@ An extension script for OpenSSH to enable fetching ssh public keys from an LDAP 
 - Refer to [0] to configure an ActiveDirectory to hold the needed attribute.
 - copy the script get-keys-from-ldap.py to /sbin on each host requiring it
 - install the python-ldap module (apt-get install python-ldap for Debian, yum install python-ldap for CentOS)
-- set ownership on get-keys-from-ldap.py root:root (chown root:root /sbin/get-keys-from-ldap.py)
+- set ownership on get-keys-from-ldap.py root:root (`chown root:root /sbin/get-keys-from-ldap.py`)
 
 If you're running selinux in enforcing mode:
-- set the context on get-keys-from-ldap.py by reference to another file in /sbin (chcon --reference /sbin/genl /sbin/get-keys-from-ldap.py)
-- set the authlogin_nsswitch_use_ldap boolean to true to allow the script to connect to the LDAP server in the context of the sshd process (setsebool -P authlogin_nsswitch_use_ldap 1)
+- set the context on get-keys-from-ldap.py by reference to another file in /sbin (`chcon --reference /sbin/genl /sbin/get-keys-from-ldap.py`)
+n.b. the context needs to be: `system_u:object_r:bin_t:s0`
+- set the authlogin_nsswitch_use_ldap boolean to true to allow the script to connect to the LDAP server in the context of the sshd process (`setsebool -P authlogin_nsswitch_use_ldap 1`)
 
 Configure sshd:
 - edit /etc/ssh/sshd_config and ensure these two lines appear:
@@ -25,8 +26,7 @@ Before logging in remotely for the first time, make sure your syslog daemon is s
   ```auth.*                 /var/log/auth.log```
 (it's beyond the scope of this document to show exhaustive examples; the key point is the script uses the AUTH facility to log its status to syslog, and if you don't send those somewhere, there's no convenient way to debug the script.)
 
-Run the script by hand for a user that has the sshPublicKeys attribute defined, (e.g. /sbin/get-keys-from-ldap.py jdoe@yourdomain.com) then tail the auth.log or secure log.  There should be entries like:
-
+Run the script by hand for a user that has the sshPublicKeys attribute defined, (e.g. `/sbin/get-keys-from-ldap.py jdoe@yourdomain.com`) then tail the auth.log or secure log.  There should be entries like:
   ```
   Feb  6 13:36:36 shell get-keys-from-ldap.py: running /sbin/get-keys-from-ldap.py for authentication of jdoe. 
   Feb  6 13:36:36 shell get-keys-from-ldap.py: Returned an ssh key successfully.
