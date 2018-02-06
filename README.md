@@ -46,4 +46,5 @@ Now, try logging in remotely to the system as a user with the sshPublicKeys attr
 
 ## References:
 [0] https://blog.laslabs.com/2016/08/storing-ssh-keys-in-active-directory/ -- Article shows how to add the extension attribute to a Microsoft ActiveDirectory schema.
+
 [1] https://man.openbsd.org/sshd_config#AuthorizedKeysCommand -- manpage for sshd_config with details on the AuthorizedKeysCommand directive
